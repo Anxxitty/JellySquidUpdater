@@ -2,5 +2,5 @@
 **.idea/**
 *.iml
 
-#Build outputs
+#Build output
 /out
