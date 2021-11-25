@@ -1,2 +1,6 @@
 #IDEA metadata
 **.idea/**
+*.iml
+
+#Build outputs
+/out
