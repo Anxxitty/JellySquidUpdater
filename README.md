@@ -1,2 +1,3 @@
 # JellySquidUpdater
-A little application that allows you to easily update Sodium, Lithium and Starlight !
+It's a custom installer for FabricMC
+It updates the JellySquid mods (Sodium/Iris, Lithium, Phosphor/Stralight) in addition to update FabricMC !
