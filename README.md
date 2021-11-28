@@ -1,2 +1,2 @@
 # JellySquidUpdater
-A little application that allows you to easily update Sodium, Lithium and Starlight !
+A custom fabric installer to automatically update sodium, lithium and phosphor/starlight in addition to updating fabric !
