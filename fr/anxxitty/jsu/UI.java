@@ -1,24 +1,25 @@
 package fr.anxxitty.jsu;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.nio.file.Path;
 
-public class GUI extends JFrame {
-
-    public static final Color LIGHT_GRAY = new Color(90, 90, 90);
-    public static final Color GRAY = new Color(65, 65, 65);
-    public static final Color DARK_GRAY = new Color(40, 40, 40);
+public class UI extends JFrame {
 
     public static JComboBox<String> versionComboBox;
+    public static JTextField installDirInput;
 
-    public GUI() {
+    public UI() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         super("JellySquid Updater");
         this.setSize(849, 480);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.getContentPane().setBackground(GRAY);
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBorder(new EmptyBorder(20, 20, 20, 20));
+        this.setContentPane(content);
 
         JPanel versionSelector = new JPanel(new FlowLayout());
         JPanel minecraftDirSelector = new JPanel(new FlowLayout());
@@ -29,26 +30,36 @@ public class GUI extends JFrame {
         versionSelector.add(versionText);
         versionSelector.add(versionComboBox);
 
-        JButton installButton = new JButton("install");
-        installButton.addActionListener(new ButtonListener());
-        installPanel.add(installButton);
-
         JLabel installDirText = new JLabel("Install Location: ");
-        JTextArea installDirInput = new JTextArea("lorem ipsum dolor");
+        installDirInput = new JTextField("/home/anxxitty/.minecraft");  //TODO Automatically find .minecraft folder
+        JButton fileExplorerButton = new JButton("...");
+        fileExplorerButton.addActionListener((e) -> {
+            JFileChooser fileChooser = new JFileChooser(installDirInput.getText());
+            fileChooser.setDialogTitle("Select Install Location");
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.showOpenDialog(this);
+        });
         minecraftDirSelector.add(installDirText);
         minecraftDirSelector.add(installDirInput);
+        minecraftDirSelector.add(fileExplorerButton);
 
-        this.add(versionSelector, BorderLayout.PAGE_START);
-        this.add(minecraftDirSelector, BorderLayout.CENTER);
-        this.add(installPanel, BorderLayout.PAGE_END);
+        JButton installButton = new JButton("install");
+        installButton.addActionListener((e) -> this.installClient(Path.of(installDirInput.getText()), (String) versionComboBox.getSelectedItem()));
+        installPanel.add(installButton);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridy = 0;
+        this.add(versionSelector, gbc);
+        gbc.gridy++;
+        this.add(minecraftDirSelector, gbc);
+        gbc.gridy++;
+        this.add(installPanel, gbc);
+        this.pack();
         this.setVisible(true);
     }
 
-    private static class ButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println(GUI.versionComboBox.getSelectedItem());
-        }
+    private void installClient(Path installLocation, String version) {
+        System.out.println(installLocation + " " + version);
     }
 
 }
