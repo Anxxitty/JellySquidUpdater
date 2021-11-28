@@ -1,2 +1,3 @@
 # JellySquidUpdater
-A custom fabric installer to automatically update sodium, lithium and phosphor/starlight in addition to updating fabric !
+It's a custom installer for FabricMC
+It updates the JellySquid mods (Sodium/Iris, Lithium, Phosphor/Stralight) in addition to update FabricMC !
