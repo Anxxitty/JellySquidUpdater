@@ -2,6 +2,7 @@ package fr.anxxitty.jsu;
 
 import fr.anxxitty.jsu.UI.InstallPanel;
 import fr.anxxitty.jsu.UI.MinecraftDirSelector;
+import fr.anxxitty.jsu.UI.ModeSelector;
 import fr.anxxitty.jsu.UI.VersionSelector;
 import fr.anxxitty.jsu.install.Installer;
 
@@ -27,26 +28,35 @@ public class Display extends JFrame {
 
 
         //Client tab
+        ModeSelector clientModeSelector = new ModeSelector();
         VersionSelector clientVersionSelector = new VersionSelector();
         MinecraftDirSelector clientMinecraftDirSelector = new MinecraftDirSelector("Minecraft Launcher Folder: ");
         InstallPanel clientInstallPanel = new InstallPanel((e) -> Installer.installClient(Path.of(clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion()));
+        JCheckBox profileCheckBox = new JCheckBox("Create Profile");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
+        clientTab.add(clientModeSelector, gbc);
+        gbc.gridy++;
         clientTab.add(clientVersionSelector, gbc);
         gbc.gridy++;
         clientTab.add(clientMinecraftDirSelector, gbc);
+        gbc.gridy++;
+        clientTab.add(profileCheckBox, gbc);
         gbc.gridy++;
         clientTab.add(clientInstallPanel, gbc);
 
 
 
         //Server tab
+        ModeSelector serverModeSelector = new ModeSelector();
         VersionSelector serverVersionSelector = new VersionSelector();
         MinecraftDirSelector serverMinecraftDirSelector = new MinecraftDirSelector("Server Folder: ");
         InstallPanel serverInstallPanel = new InstallPanel((e) -> Installer.installClient(Path.of(clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion()));
 
         gbc.gridy = 0;
+        serverTab.add(serverModeSelector, gbc);
+        gbc.gridy++;
         serverTab.add(serverVersionSelector, gbc);
         gbc.gridy++;
         serverTab.add(serverMinecraftDirSelector, gbc);
