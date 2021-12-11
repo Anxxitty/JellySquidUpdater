@@ -5,13 +5,27 @@ import fr.anxxitty.jsu.UI.MinecraftDirSelector;
 import fr.anxxitty.jsu.UI.ModeSelector;
 import fr.anxxitty.jsu.UI.VersionSelector;
 import fr.anxxitty.jsu.install.Installer;
+import fr.anxxitty.jsu.install.Updater;
+import fr.anxxitty.jsu.util.Utils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.nio.file.Path;
+import java.io.File;
 
 public class Display extends JFrame {
+
+    ModeSelector clientModeSelector;
+    VersionSelector clientVersionSelector;
+    MinecraftDirSelector clientMinecraftDirSelector;
+    InstallPanel clientInstallPanel;
+    JCheckBox profileCheckBox;
+
+    ModeSelector serverModeSelector;
+    VersionSelector serverVersionSelector;
+    MinecraftDirSelector serverMinecraftDirSelector;
+    InstallPanel serverInstallPanel;
+    JCheckBox generateScriptsCheckBox;
 
     public Display() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         super("JellySquid Updater");
@@ -28,11 +42,11 @@ public class Display extends JFrame {
 
 
         //Client tab
-        ModeSelector clientModeSelector = new ModeSelector();
-        VersionSelector clientVersionSelector = new VersionSelector();
-        MinecraftDirSelector clientMinecraftDirSelector = new MinecraftDirSelector("Minecraft Launcher Folder: ");
-        InstallPanel clientInstallPanel = new InstallPanel((e) -> Installer.installClient(Path.of(clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion()));
-        JCheckBox profileCheckBox = new JCheckBox("Create Profile");
+        this.clientModeSelector = new ModeSelector();
+        this.clientVersionSelector = new VersionSelector();
+        this.clientMinecraftDirSelector = new MinecraftDirSelector("Minecraft Launcher Folder: ", Utils.findMinecraftDir());
+        this.clientInstallPanel = new InstallPanel((e) -> this.selectInstallMode(0));
+        this.profileCheckBox = new JCheckBox("Create Profile");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
@@ -49,10 +63,11 @@ public class Display extends JFrame {
 
 
         //Server tab
-        ModeSelector serverModeSelector = new ModeSelector();
-        VersionSelector serverVersionSelector = new VersionSelector();
-        MinecraftDirSelector serverMinecraftDirSelector = new MinecraftDirSelector("Server Folder: ");
-        InstallPanel serverInstallPanel = new InstallPanel((e) -> Installer.installClient(Path.of(clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion()));
+        this.serverModeSelector = new ModeSelector();
+        this.serverVersionSelector = new VersionSelector();
+        this.serverMinecraftDirSelector = new MinecraftDirSelector("Server Folder: ", Utils.getHomeFolder());
+        this.serverInstallPanel = new InstallPanel((e) -> this.selectInstallMode(1));
+        this.generateScriptsCheckBox = new JCheckBox("Generate Launch Scripts");
 
         gbc.gridy = 0;
         serverTab.add(serverModeSelector, gbc);
@@ -60,6 +75,8 @@ public class Display extends JFrame {
         serverTab.add(serverVersionSelector, gbc);
         gbc.gridy++;
         serverTab.add(serverMinecraftDirSelector, gbc);
+        gbc.gridy++;
+        serverTab.add(generateScriptsCheckBox, gbc);
         gbc.gridy++;
         serverTab.add(serverInstallPanel, gbc);
 
@@ -74,6 +91,24 @@ public class Display extends JFrame {
         this.setSize(525, 300);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    private void selectInstallMode(int clientOrServer) {
+        if (clientOrServer == 1) {
+            if (this.serverModeSelector.getMode().equalsIgnoreCase("install")) {
+                Installer.installServer(new File(this.serverMinecraftDirSelector.getInstallDir()), serverVersionSelector.getVersion(), this.generateScriptsCheckBox.isSelected());
+            }
+            else {
+                Updater.updateServer(new File(this.serverMinecraftDirSelector.getInstallDir()), serverVersionSelector.getVersion());
+            }
+        } else {
+            if (this.clientModeSelector.getMode().equalsIgnoreCase("install")) {
+                Installer.installClient(new File(this.clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion(), this.profileCheckBox.isSelected());
+            }
+            else {
+                Updater.updateClient(new File(this.clientMinecraftDirSelector.getInstallDir()), clientVersionSelector.getVersion());
+            }
+        }
     }
 
 }
